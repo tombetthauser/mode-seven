@@ -3,6 +3,9 @@ import 'track.png'
 import 'field.png'
 import 'sky.png'
 import 'truck.png'
+import 'figure-1.png'
+import 'figure-2.png'
+import 'figure-3.png'
 
 local gfx = playdate.graphics
 playdate.display.setScale(2)
@@ -13,8 +16,9 @@ local field = gfx.image.new('field')
 local fieldwidth, fieldheight = field:getSize()
 local sky = gfx.image.new('sky')
 local truck = gfx.image.new('truck')
+local figure = gfx.image.new('figure-1')
 
-local fieldscale = 5
+local fieldscale = 2
 x = 130
 y = 157
 local angle = 130 * (math.pi/180)
@@ -22,7 +26,7 @@ local dangle = 0
 local t = 0
 local speed = 0
 local maxspeed = 5
-local maxspeed_offtrack = 1.3
+local maxspeed_offtrack = 2
 local accel = 0.06
 local turnspeed = 0.005
 local maxturn = 0.05
@@ -39,8 +43,6 @@ gfx.fillRect(0,0,400,240)
 local leftDown = false
 local rightDown = false
 
---gfx.setImageDrawMode(gfx.kDrawModeNXOR)
-
 function playdate.update()
 
 	gfx.setColor(gfx.kColorWhite)
@@ -48,12 +50,36 @@ function playdate.update()
 
 	t = t + 1
 
-	if (t % 2) > 0 then
-		truck = gfx.image.new('truck2')
-		-- frame = 0
-	else 
-		truck = gfx.image.new('truck')
-		-- frame = 1
+	-- if (t % 2) > 0 then
+	-- 	truck = gfx.image.new('truck2')
+	-- else 
+	-- 	truck = gfx.image.new('truck')
+	-- end
+  if upDown then
+		if frame < 1 then
+			figure = gfx.image.new('figure-1')
+			frame = frame + 0.25
+		elseif frame < 2 then
+			figure = gfx.image.new('figure-2')
+			frame = frame + 0.25
+		elseif frame < 3 then
+			figure = gfx.image.new('figure-3')
+			frame = frame + 0.25
+		else
+			figure = gfx.image.new('figure-1')
+			frame = 0
+		end
+	else
+		if frame < 8 then
+			figure = gfx.image.new('figure-1')
+			frame = frame + 0.25
+		elseif frame < 16 then
+			figure = gfx.image.new('figure-3')
+			frame = frame + 0.25
+		else
+			figure = gfx.image.new('figure-1')
+			frame = 0
+		end
 	end
 	
 	if leftDown then
@@ -126,8 +152,9 @@ function playdate.update()
 		rumble = (x + y) % 2;
 	end
 
-	local w, h = truck:getSize()
-	truck:draw(100 - w / 2, 90 + rumble/2)
+	local w, h = figure:getSize()
+	figure:draw(100 - w / 2, 90)
+	-- figure:draw(100 - w / 2, 90 + rumble/2)
 end
 
 function playdate.leftButtonDown() leftDown = true end
